@@ -12,7 +12,6 @@ const fs = P.promisifyAll(require('fs'));
 const creds = require('./credentials');
 const Twit = require('twit');
 const REST = new Twit(creds.live);
-REST.postMediaChunkedAsync = P.promisify(REST.postMediaChunked);
 
 const REUTERS_IMAGES_URI = 'https://pictures.reuters.com';
 
@@ -27,9 +26,7 @@ then(w => {
 }).
 map(uri => {
   let basename = path.basename(uri);
-  console.log(`basename of ${basename}`);
   return request.getAsync({uri: uri, encoding: null})
-    // then(data => {console.log(`got ${data.length} long data`); fs.writeFileAsync(basename, data, {encoding: null})}).
 }).
 map(res => {
   let media_data = res.body.toString('base64');
@@ -43,6 +40,6 @@ then(media_ids => {
   return REST.post('statuses/update', params);
 })
 .then(res => {
-  console.log(`I twote:\n${JSON.stringify(_.pick(res.data,['id_str', 'text', 'entities']), null, 2)}`);
+  console.log(`I twote:\n${res.data.id_str}, ${res.data.text}`);
 }).
 catch(console.error);
