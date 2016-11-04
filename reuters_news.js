@@ -62,8 +62,8 @@ then(media_ids => {
   let status = _.sample(pithyText);
   let params = {status: status, media_ids: media_ids};
   return REST.post('statuses/update', params);
-})
-.then(res => {
-  console.log(`I twote:\n${res.data.id_str}, ${res.data.text}`);
+}).
+then(res => {
+  console.log(`NEWSPHOTOS twote:\n${res.data.id_str}, ${res.data.text}`);
 }).
 catch(console.error);

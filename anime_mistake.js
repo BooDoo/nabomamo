@@ -30,6 +30,6 @@ then(media_id => {
   return REST.post('statuses/update', params);
 }).
 then(res => {
-  console.log(`I twote:\n${res.data.id_str}`);
+  console.log(`ANIME twote:\n${res.data.id_str}`);
 }).
 catch(console.error);
