@@ -10,7 +10,7 @@ const creds = require('./credentials');
 const Twit = require('twit');
 const REST = new Twit(creds.live);
 
-const ANIME_DIR = path.join('assets', 'shaft', 'char');
+const ANIME_DIR = _.sample([path.join('assets', 'shaft', 'char'), path.join('assets', 'bbcf', 'char')]);
 const ANIME_BASENAME = _.sample(fs.readdirSync(ANIME_DIR));
 const ANIME_PATH = path.join(ANIME_DIR, ANIME_BASENAME);
 const TEMPLATE_PATH = path.join('assets', 'base', 'miyazaki-mistake_720.png');
