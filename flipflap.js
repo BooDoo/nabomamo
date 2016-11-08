@@ -74,7 +74,7 @@ let framed = {
 
 let downsized = {
   inputs: 'framed',
-  filter: 'scale', options: '-1:720:flags=lanczos',
+  filter: 'scale', options: '-1:480:flags=lanczos',
   outputs: 'scaled'
 };
 
@@ -130,7 +130,6 @@ flickr.getAsync('photos.search', flickr_options).
     let command = ffmpeg();
     let img_stream = new Stream.PassThrough();
     request.get(photo.imgUrl).pipe(img_stream);
-
     command.
       input(img_stream).
       input(VID_PATH).
