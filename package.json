@@ -29,6 +29,7 @@
     "lodash": "~4.16.6",
     "node-flickr": "^1.0.0",
     "request": "^2.76.0",
+    "text2wave": "^1.0.0",
     "twit": "^2.2.5"
   }
 }
