@@ -1,0 +1,137 @@
+#!/usr/bin/env node
+
+'use strict';
+
+const
+  STATUS_URI = 'https://upload.twitter.com/1.1/media/upload.json',
+	exec = require('child_process').execFileSync,
+	fs = require('fs'),
+  creds = require('./credentials'),
+  d = new Date(),
+  dateString = `${d.getMonth()+1}-${d.getDate()}-${d.getFullYear()}`;
+
+const
+  Twit = require('twit'),
+	mime = require('mime'),
+	MAX_FILE_SIZE_BYTES = 15 * 1024 * 1024 * 4,
+	MAX_FILE_CHUNK_BYTES = 4 * 1024 * 1024,
+	FileUploader = require('twit/lib/file_uploader'),
+	REST = new Twit(creds.live),
+	urisFile = `gnn_status_uris_${dateString}.txt`,
+	vidsFile = `gnn_status_vids_${dateString}.txt`,
+	outFile = `glitchdigest_${dateString}.mp4`,
+  AUDIO_CODEC = (process.platform === 'win32') ? 'libvo_aacenc' : 'aac',
+	
+	searchParams = {
+		screen_name: 'glitchnn',
+    result_type: 'recent',
+		count: 10,
+		trim_user: 1
+	};
+
+// manually override "INIT" function to support longer video...
+FileUploader.prototype._initMedia = function (cb) {
+  var self = this;
+  var mediaType = mime.lookup(self._file_path);
+  var mediaFileSizeBytes = fs.statSync(self._file_path).size;
+  var postOpts = {
+    'command': 'INIT',
+    'media_type': mediaType,
+    'media_category': 'tweetvideo',
+    'total_bytes': mediaFileSizeBytes
+   };
+
+  // console.log(`postOpts: ${JSON.stringify(postOpts)}`);
+  // Check the file size - it should not go over 15MB for video.
+  // See https://dev.twitter.com/rest/reference/post/media/upload-chunked
+  if (mediaFileSizeBytes < MAX_FILE_SIZE_BYTES) {
+    self._twit.post('media/upload', postOpts, cb);
+  } else {
+    var errMsg = util.format('This file is too large. Max size is %dB. Got: %dB.', MAX_FILE_SIZE_BYTES, mediaFileSizeBytes);
+    cb(new Error(errMsg));
+  }
+}
+
+// manually override "FINALIZE" function to wait on video processing...
+FileUploader.prototype._finalizeMedia = function(media_id, cb) {
+  var self = this;
+  self._twit.post('media/upload', {
+    command: 'FINALIZE',
+    media_id: media_id
+  }, cb);
+}
+
+// Get status ids, write them to file
+REST.get('statuses/user_timeline', searchParams)
+	.then(res => res.data.map(status=>status.id_str).sort())
+	.then(ids => {
+		// console.log(`Found ${ids.length} tweets`);
+
+		const uris = ids.map(id=>`https://twitter.com/glitchnn/status/${id}`);
+		fs.writeFileSync(urisFile, uris.join("\n"));
+
+		const vids = ids.map(id=>`file '${id}.mp4'`);
+		fs.writeFileSync(vidsFile, vids.join("\n"));
+
+		return ids;
+	})
+	// Use youtube-dl to download the associated vids
+	.then(() => {
+		const ytdl = exec('youtube-dl', ['-i', '--batch-file', urisFile, '-o', '%(id)s.%(ext)s']);
+		return;
+	})
+	// Join the individuals videos together with ffmpeg
+	.then(() => {
+    console.log("starting ffmpeg concat...");
+		const ffmpeg_opts = ['-nostats', '-loglevel', 'error', '-f', 'concat', '-i', vidsFile, '-c:v', 'libx264', '-c:a', AUDIO_CODEC, '-b:a', '46k', '-b:v', '740k', '-y', outFile];
+		const ffmpeg = exec('ffmpeg', ffmpeg_opts);
+	})
+	// Post the omnivid
+	.then(() => {
+		REST.postMediaChunked({ file_path: outFile}, (err, data, res) => {
+			if (err) {throw err;}
+			console.log(`Uploaded to media_id: ${data.media_id_string}`);
+      let mediaId = data.media_id_string;
+      // wait until uploaded video is processed
+      awaitVideo(mediaId)
+      .then(data => {
+        let params = {
+          status: `Glitch News Digest, ${dateString}\n[cw: photosensitivity]`,
+          media_ids: [mediaId]
+        };
+        return REST.post('statuses/update', params)
+      }).
+      then(res=> {
+        console.log(`GNN twote:\n${res.data.id_str}`);
+        // Delete MP4s and TXTs
+        fs.readdirSync('./').filter(fn=>(~fn.indexOf('.mp4') || ~fn.indexOf('.txt'))).forEach(fn=>fs.unlinkSync(fn))
+      })
+		});
+	}).
+  catch(console.error);
+
+function awaitVideo(mediaId) {
+  return new Promise(function(resolve, reject) {
+    function next() {
+      return REST.get(STATUS_URI, {
+        command: 'STATUS',
+        media_id: mediaId
+      }).
+      then(res => {
+        // console.dir(res.data);
+        if (res.data.processing_info.state==='succeeded') {
+            // succeeded
+            // console.log('got "succeeded" status, resolving');
+            resolve(res.data);
+        } else {
+            // run another iteration of the loop after delay
+            console.log(`got ${res.data.processing_info.state} status; waiting ${res.data.processing_info.check_after_secs}`);
+            setTimeout(next, res.data.processing_info.check_after_secs * 1000);
+        }
+      }, reject);
+    }
+
+    // start first iteration of the loop
+    next();
+  });
+}
