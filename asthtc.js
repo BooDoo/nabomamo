@@ -46,8 +46,8 @@ const skewPairs = [
 // Some streams for glitching/saving
 // semi-arbitrary values, here
 let gstream = new GlitchedStream({
-  probability: 0.0010,
-  deviation: 1
+  probability: 0.00007,
+  deviation: 3
 });
 
 let outStream = fs.createWriteStream(OUT_PATH).
@@ -102,7 +102,7 @@ flickr.getAsync('photos.search', flickrSearchOpts).
         out(cw[1]);
     });
     
-    cmd.resize(2048, 2048, '>').stream().pipe(gstream).pipe(outStream);
+    cmd.resize(2048, 2048, '>').stream('jpg').pipe(gstream).pipe(outStream);
     outStream.on('finish', () => {
       REST.postMediaChunkedAsync({file_path: OUT_PATH}).
         then(r=>REST.post('statuses/update', {
@@ -112,7 +112,7 @@ flickr.getAsync('photos.search', flickrSearchOpts).
             join("\n"),
           media_ids: [r.media_id_string]
         })).
-        then(res=>console.log(`ASTHTC twote:${res.data.status}\n\t${res.data.id_str}`)).
+        then(res=>console.log(`ASTHTC twote:${res.data.id_str}`)).
         catch(console.error)
     });
   }).
