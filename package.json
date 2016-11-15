@@ -24,9 +24,11 @@
   "dependencies": {
     "bluebird": "^3.4.6",
     "fluent-ffmpeg": "^2.1.0",
+    "glitch": "^0.1.0",
     "gm": "^1.23.0",
     "jsdom": "^9.8.3",
     "lodash": "~4.16.6",
+    "mersenne-twister": "^1.1.0",
     "node-flickr": "^1.0.0",
     "request": "^2.76.0",
     "text2wave": "^1.0.0",
