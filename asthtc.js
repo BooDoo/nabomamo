@@ -2,10 +2,10 @@
 
 'use strict';
 
-// override node random with Mersenne Twister
-// const MersenneTwister = require('mersenne-twister');
-// const rng = new MersenneTwister();
-// Math.random = rng.random;
+// Replace Math.random() with MT-based substitute:
+const MersenneTwister = require('mersenne-twister');
+const rng = new MersenneTwister();
+Math.random = rng.random.bind(rng);
 
 const _ = require('lodash');
 const os = require('os');

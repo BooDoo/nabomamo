@@ -8,11 +8,10 @@ const fs = P.promisifyAll(require('fs'));
 const gm = require('gm').subClass({imageMagick: true});
 const creds = require('./credentials');
 const Twit = require('twit');
-const REST = new Twit(creds.live);
+const REST = new Twit(creds.test);
 
-const ANIME_DIR = _.sample([path.join('assets', 'shaft', 'char'), path.join('assets', 'bbcf', 'char')]);
-const ANIME_BASENAME = _.sample(fs.readdirSync(ANIME_DIR));
-const ANIME_PATH = path.join(ANIME_DIR, ANIME_BASENAME);
+const ANIME_DIRS = [path.join('assets', 'shaft', 'char'), path.join('assets', 'bbcf', 'char'), path.join('assets', 'pripri'), path.join('assets', 'imas', 'char')]
+const ANIME_PATH = _(ANIME_DIRS.map(d=>fs.readdirSync(d).map(b=>`${d}/${b}`))).flatten().sample();
 const TEMPLATE_PATH = path.join('assets', 'base', 'miyazaki-mistake_720.png');
 
 let compBuffer = gm(TEMPLATE_PATH).composite(ANIME_PATH).resize(1280, 720).gravity('NorthEast')
@@ -30,6 +29,6 @@ then(media_id => {
   return REST.post('statuses/update', params);
 }).
 then(res => {
-  console.log(`ANIME twote:\n${res.data.id_str}`);
+  console.log(`ANIME twote:\n${res.data.id_str} using ${path.basename(ANIME_PATH)}`);
 }).
 catch(console.error);
