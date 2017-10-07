@@ -11,7 +11,7 @@ const fs = P.promisifyAll(require('fs'));
 const gm = require('gm').subClass({imageMagick: true});
 const creds = require('./credentials');
 const Twit = require('twit');
-const REST = new Twit(creds.test);
+const REST = new Twit(creds.live);
 
 const ANIME_DIRS = [path.join('assets', 'shaft', 'char'), path.join('assets', 'bbcf', 'char'), path.join('assets', 'pripri'), path.join('assets', 'imas', 'char')]
 const ANIME_PATH = _(ANIME_DIRS.map(d=>fs.readdirSync(d).map(b=>`${d}/${b}`))).flatten().sample();
