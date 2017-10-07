@@ -3,9 +3,7 @@
 'use strict';
 
 // Replace Math.random() with MT-based substitute:
-const MersenneTwister = require('mersenne-twister');
-const rng = new MersenneTwister();
-Math.random = rng.random.bind(rng);
+Math.random = require('./mt-rng');
 
 const _ = require('lodash');
 const os = require('os');

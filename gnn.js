@@ -2,6 +2,9 @@
 
 'use strict';
 
+// Replace Math.random() with MT-based substitute:
+Math.random = require('./mt-rng');
+
 const
   STATUS_URI = 'https://upload.twitter.com/1.1/media/upload.json',
 	exec = require('child_process').execFileSync,

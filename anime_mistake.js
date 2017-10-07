@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+// Replace Math.random() with MT-based substitute:
+Math.random = require('./mt-rng');
+
 const _ = require('lodash');
 const P = require('bluebird');
 const path = require('path');
