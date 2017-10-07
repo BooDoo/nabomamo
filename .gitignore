@@ -1,2 +1,3 @@
 credentials.secret.json
 node_modules/
+credentials.json.secret.json
