@@ -20,7 +20,7 @@ const secondWords = "egg beer avocado loaf candy food meal dinner supper breakfa
 function getRelated(w) {
   let target = `http://api.wordnik.com/v4/word.json/${w}/relatedWords?useCanonical=true&relationshipTypes=same-context,hypernym&limitPerRelationshipType=30&api_key=${creds.wordnik.api_key}`
   return request.getAsync({url: target, json: true})
-  .then(res => _(res.body).map("words").flatten().value());
+  .then(res => _.flatMap(res.body, "words"));
 }
 
 // Pick a seed word from each list and fetch related words for each

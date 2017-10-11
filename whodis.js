@@ -12,8 +12,10 @@ const REST = new Twit(creds.live);
 const CORPORAPATH = './assets/corpora-project/';
 const adjs = require(CORPORAPATH+'words/adjs').adjs;
 
-const venues = _.flatten(require(CORPORAPATH+'geography/venues').categories.
-  map(cat=>cat.categories.map(el=>el.name)));
+const venues = _.flatMap(
+                require(CORPORAPATH+'geography/venues').categories,
+                el=> _.map(el.categories || el, 'name')
+              );
 const objects = require(CORPORAPATH+'objects/objects').objects;
 
 const nouns = _.concat(venues, objects);

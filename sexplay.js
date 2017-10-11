@@ -17,7 +17,7 @@ const building_materials = require(CORPORAPATH+'materials/building-materials')["
 const layperson_metals = require(CORPORAPATH+'materials/layperson-metals')["layperson metals"];
 const greek_gods = require(CORPORAPATH+'mythology/greek_gods').greek_gods;
 const monsters = require(CORPORAPATH+'mythology/monsters').names;
-const norse_deities = _(require(CORPORAPATH+'mythology/norse_gods').norse_deities).valuesIn().flatten().value();
+const norse_deities = _.flatMap(require(CORPORAPATH+'mythology/norse_gods').norse_deities);
 const bodyparts = require(CORPORAPATH+'humans/bodyParts').bodyParts;
 
 

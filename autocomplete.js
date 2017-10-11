@@ -14,10 +14,10 @@ const animals = require(CORPORAPATH+'animals/common').animals;
 const bodyParts = require(CORPORAPATH+'humans/bodyParts').bodyParts;
 const passages = require(CORPORAPATH+'architecture/passages.json').passages;
 
-const settings = _(require(CORPORAPATH+'archetypes/setting').settings).map(el=>_.concat(el.synonyms, el.name)).flatten().value();
-const events = _(require(CORPORAPATH+'archetypes/event').events).map(el=>_.concat(el.synonyms, el.name)).flatten().value();
-const artifacts = _(require(CORPORAPATH+'archetypes/artifact').artifacts).map(el=>_.concat(el.synonyms, el.name)).flatten().value();
-const characters = _(require(CORPORAPATH+'archetypes/character').characters).map(el=>_.concat(el.synonyms, el.name)).flatten().value();
+const settings = _.flatMap(require(CORPORAPATH+'archetypes/setting').settings, el=>_.concat(el.synonyms, el.name));
+const events = _.flatMap(require(CORPORAPATH+'archetypes/event').events, el=>_.concat(el.synonyms, el.name));
+const artifacts = _.flatMap(require(CORPORAPATH+'archetypes/artifact').artifacts, el=>_.concat(el.synonyms, el.name));
+const characters = _.flatMap(require(CORPORAPATH+'archetypes/character').characters, el=>_.concat(el.synonyms, el.name));
 
 const words = _.concat(animals, bodyParts, passages, settings, events, artifacts, characters);
 

@@ -14,7 +14,7 @@ const Twit = require('twit');
 const REST = new Twit(creds.live);
 
 const ANIME_DIRS = [path.join('assets', 'shaft', 'char'), path.join('assets', 'bbcf', 'char'), path.join('assets', 'pripri'), path.join('assets', 'imas', 'char')]
-const ANIME_PATH = _(ANIME_DIRS.map(d=>fs.readdirSync(d).map(b=>`${d}/${b}`))).flatten().sample();
+const ANIME_PATH = _(ANIME_DIRS).flatMap(d=>fs.readdirSync(d).map(b=>`${d}/${b}`)).sample();
 const TEMPLATE_PATH = path.join('assets', 'base', 'miyazaki-mistake_720.png');
 
 let compBuffer = gm(TEMPLATE_PATH).composite(ANIME_PATH).resize(1280, 720).gravity('NorthEast')
