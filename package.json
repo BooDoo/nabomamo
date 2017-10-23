@@ -23,6 +23,7 @@
   "homepage": "https://github.com/BooDoo/nabomamo#readme",
   "dependencies": {
     "bluebird": "^3.4.6",
+    "child-process-promise": "^2.2.1",
     "fluent-ffmpeg": "^2.1.0",
     "glitch": "^0.1.0",
     "gm": "^1.23.0",
