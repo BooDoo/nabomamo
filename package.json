@@ -23,8 +23,8 @@
   "homepage": "https://github.com/BooDoo/nabomamo#readme",
   "dependencies": {
     "bluebird": "^3.4.6",
-    "child-process-promise": "^2.2.1",
     "canvas": "^1.6.7",
+    "child-process-promise": "^2.2.1",
     "flubber": "^0.4.0",
     "fluent-ffmpeg": "^2.1.0",
     "gifencoder": "^1.1.0",
@@ -36,6 +36,7 @@
     "node-flickr": "^1.0.0",
     "opentype.js": "^0.7.3",
     "request": "^2.76.0",
+    "rita": "^1.2.12",
     "text-to-svg": "^3.1.3",
     "text2wave": "^1.0.0",
     "twit": "^2.2.5",
