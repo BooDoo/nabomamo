@@ -12,7 +12,7 @@ const Twit = require('twit');
 const REST = new Twit(creds.live);
 
 function getVerb(length=4) {
-  let type = _.sample(['vb' : 'vbp']);
+  let type = _.sample(['vb','vbp']);
   let verb = rw(type);
   if (verb.length == 4) {
     return verb;
