@@ -24,7 +24,13 @@ const REST = new Twit(creds.live);
 const TMP_FILE = path.join(os.tmpdir(), 'this.png');
 
 function isntAdverb(w) {
-  return !isAdverb(w);
+  if (_.words(w).length > 1) {
+    return true;
+  } else if (isAdverb(w)) {
+    return false;
+  } else {
+    return true;
+  }
 }
 
 function getRandomWord() {
@@ -57,7 +63,7 @@ function getWordPair(srcWord=null) {
 
 getWordPair().
   tap(console.log).
-  then(words => `convert ./assets/base/isthis.png -font "Ubuntu-Bold" -fill white -background none -pointsize 27 ( label:"${words.srcWord}" -rotate -8 -geometry +430+150 ) -composite ( label:"${words.relWord}" -geometry +310+430 ) -composite "${TMP_FILE}"`).  
+  then(words => `convert ./assets/base/isthis.png -font "Ubuntu-Condensed" -fill white -background none -pointsize 27 \\( label:"${words.srcWord}" -rotate -8 -geometry +430+150 \\) -composite \\( label:"${words.relWord}" -geometry +310+430 \\) -composite "${TMP_FILE}"`).  
   then(imCall => exec(imCall)).
   then(ret=>REST.postMediaChunkedAsync({file_path: TMP_FILE})).
   then(r=>REST.post('statuses/update', {
