@@ -83,6 +83,9 @@ function parseDate(date) {
 }
 
 function dateStringFromRange(range) {
+  if (_.isNull(range) || _.isUndefined(range)) {
+    return range;
+  }
   let [start, end] = [range.start, range.end];
   if (start == end) {
     if (start < 0) {
