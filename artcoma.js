@@ -192,7 +192,7 @@ async function main(endpoint) {
   if (piece.dateRange.start == piece.dateRange.end) {
     comaLength = `${thisYear - piece.dateRange.start} years`;
   } else {
-    comaLength = `${thisYear - piece.dateRange.start}-${thisYear - piece.dateRange.end} years`;
+    comaLength = `${thisYear - piece.dateRange.end}-${thisYear - piece.dateRange.start} years`;
   }
   let pieceLabel = `${piece.title} ${piece.dateString} ${piece.culture} ${piece.medium}`;
   let reply = `you're in luck because ${pieceLabel} can be found in the Boston Museum of Fine Arts' ${piece.gallery}`;
