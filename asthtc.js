@@ -3,7 +3,7 @@
 'use strict';
 
 // Replace Math.random() with MT-based substitute:
-Math.random = require('./mt-rng');
+Math.random = require('./lib/mt-rng');
 
 const _ = require('lodash');
 const os = require('os');
