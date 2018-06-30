@@ -60,7 +60,7 @@ get_character().then(res => {
         on('end', function() {
               REST.postMediaChunkedAsync({file_path: TMP_FILE}).
                 then(r=>REST.post('statuses/update', {
-                  status: '',
+                  status: `${char_name}`,
                   media_ids: [r.media_id_string]
                 })).
                 then(res=>console.log(`MARIO twote:\n${res.data.id_str} using ${char_name}`)).

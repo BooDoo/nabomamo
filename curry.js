@@ -49,7 +49,7 @@ say(DESTINATION).pipe(WAV_STREAM).on('finish', () => {
             console.log(`wrote to ${TMP_FILE} using ${DESTINATION} `);
             REST.postMediaChunkedAsync({file_path: TMP_FILE}).
               then(r=>REST.post('statuses/update', {
-                status: '',
+                status: `${DESTINATION}`,
                 media_ids: [r.media_id_string]
               })).
               then(res=>console.log(`CURRY twote:\n${res.data.id_str}`)).
